@@ -9,10 +9,16 @@ namespace myBackup
         public static void Main(string[] args)
         {
             ConfigUtils.Init();
-            
-            FolderAction folderAction = new FolderAction();
-            folderAction.Init();
-            folderAction.CopyFolder();
+
+            try
+            {
+                FolderAction folderAction = FolderAction.Init();
+                folderAction.CopyFolder();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed to backup data: " + e.StackTrace);
+            }
         }
     }
 }

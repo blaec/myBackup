@@ -8,24 +8,26 @@ namespace myBackup.model
 {
     public class FolderAction
     {
-        private string _baseTarget;
-        private string _target;
-        private List<BackupLocation> _backupLocations;
+        private static string _baseTarget;
+        private static string _target;
+        private static List<BackupLocation> _backupLocations;
 
-        public FolderAction()
+        private FolderAction()
         {
         }
 
-        public void Init()
+        public static FolderAction Init()
         {
-            _baseTarget = ConfigUtils.Config.GetSection("baseTarget").Value;
+            _baseTarget = ConfigUtils.Config.GetSection("target").Value;
             _target = Path.Combine(_baseTarget, DateTime.Now.ToString("yyyyMMdd-HHmmss"));
-            _backupLocations = ConfigUtils.Config.GetSection("backup").Get<List<BackupLocation>>();
+            _backupLocations = ConfigUtils.Config.GetSection("source").Get<List<BackupLocation>>();
 
             if (!Directory.Exists(_baseTarget))
             {
                 Directory.CreateDirectory(_baseTarget);
             }
+
+            return new FolderAction();
         }
 
         public void CopyFolder()
