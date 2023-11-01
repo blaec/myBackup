@@ -1,4 +1,6 @@
-﻿using myBackup.model;
+﻿using System;
+using myBackup.model;
+using myBackup.utils;
 
 namespace myBackup
 {
@@ -6,9 +8,17 @@ namespace myBackup
     {
         public static void Main(string[] args)
         {
-            FolderAction folderAction = new FolderAction();
-            folderAction.Init();
-            folderAction.CopyFolder();
+            ConfigUtils.Init();
+
+            try
+            {
+                FolderAction folderAction = FolderAction.Init();
+                folderAction.CopyFolder();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed to backup data: " + e.StackTrace);
+            }
         }
     }
 }
