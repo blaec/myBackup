@@ -1,4 +1,6 @@
-﻿using myBackup.model;
+﻿using System;
+using myBackup.model;
+using myBackup.utils;
 
 namespace myBackup
 {
@@ -6,6 +8,8 @@ namespace myBackup
     {
         public static void Main(string[] args)
         {
+            ConfigUtils.Init();
+            
             FolderAction folderAction = new FolderAction();
             folderAction.Init();
             folderAction.CopyFolder();

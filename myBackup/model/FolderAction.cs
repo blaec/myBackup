@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.Configuration;
+using myBackup.utils;
 
 namespace myBackup.model
 {
     public class FolderAction
     {
-        private string _baseFolder;
+        private string _baseTarget;
         private string _target;
-        private string _source;
-        private string _sourceName;
+        private List<BackupLocation> _backupLocations;
 
         public FolderAction()
         {
@@ -16,30 +18,33 @@ namespace myBackup.model
 
         public void Init()
         {
-            _baseFolder = @"C:\Users\blaec\Downloads\_backup";
-            _target = Path.Combine(_baseFolder, DateTime.Now.ToString("yyyyMMdd-HHmmss"));
-            _source = @"C:\Users\blaec\Pictures\My Albums\2007";
-            _sourceName = "my_albums";
-            
-            if (!Directory.Exists(_baseFolder))
+            _baseTarget = ConfigUtils.Config.GetSection("baseTarget").Value;
+            _target = Path.Combine(_baseTarget, DateTime.Now.ToString("yyyyMMdd-HHmmss"));
+            _backupLocations = ConfigUtils.Config.GetSection("backup").Get<List<BackupLocation>>();
+
+            if (!Directory.Exists(_baseTarget))
             {
-                Directory.CreateDirectory(_baseFolder);
+                Directory.CreateDirectory(_baseTarget);
             }
         }
 
         public void CopyFolder()
         {
-            CopyFolder(new DirectoryInfo(_source), "");
-            foreach (DirectoryInfo di in new DirectoryInfo(_source).GetDirectories("*.*", SearchOption.AllDirectories))
+            foreach (BackupLocation location in _backupLocations)
             {
-                CopyFolder(di, di.FullName.Replace(_source, ""));
+                CopyFolder(new DirectoryInfo(location.path), "", location);
+                foreach (DirectoryInfo di in new DirectoryInfo(location.path).GetDirectories("*.*", SearchOption.AllDirectories))
+                {
+                    CopyFolder(di, di.FullName.Replace(location.path, ""), location);
+                }
+               
             }
         }
 
-        private void CopyFolder(DirectoryInfo di, string path)
+        private void CopyFolder(DirectoryInfo di, string path, BackupLocation location)
         {
             Console.WriteLine($"[{di.GetDirectories().Length} - {di.GetFiles().Length}] {di.FullName}");
-            string destinationFolderName = Path.Combine(_target, _sourceName + "\\" + path);
+            string destinationFolderName = Path.Combine(_target, location.name + "\\" + path);
             if (!Directory.Exists(destinationFolderName))
             {
                 Directory.CreateDirectory(destinationFolderName);
