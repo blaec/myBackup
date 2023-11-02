@@ -19,6 +19,8 @@ namespace myBackup
             {
                 Console.WriteLine("Failed to backup data: " + e.StackTrace);
             }
+            
+            // Console.ReadLine();
         }
     }
 }
