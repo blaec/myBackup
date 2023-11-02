@@ -7,6 +7,10 @@ namespace myBackup.Utils
     {
         public static IConfiguration Config;
 
+        private ConfigUtils()
+        {
+        }
+
         public static void Init()
         {
             var builder = new ConfigurationBuilder();

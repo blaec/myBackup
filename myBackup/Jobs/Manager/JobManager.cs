@@ -16,22 +16,25 @@ namespace myBackup.Jobs.Manager
             // and start it off
             await scheduler.Start();
 
-            // define the job and tie it to our HelloJob class
-            IJobDetail job = JobBuilder.Create<HelloJob>()
-                .WithIdentity("job1", "group1")
+            IJobDetail dailyBackupJob = JobBuilder.Create<DailyBackupJob>()
+                .WithIdentity("dailyBackupJob", "daily")
+                .Build();
+            IJobDetail monthlyBackupJob = JobBuilder.Create<MonthlyBackupJob>()
+                .WithIdentity("monthlyBackupJob", "daily")
                 .Build();
 
-            // Trigger the job to run now, and then repeat every 10 seconds
-            ITrigger trigger = TriggerBuilder.Create()
-                .WithIdentity("trigger1", "group1")
-                .StartNow()
-                .WithSimpleSchedule(x => x
-                    .WithIntervalInSeconds(10)
-                    .RepeatForever())
+            ITrigger dailyBackupTrigger = TriggerBuilder.Create()
+                .WithIdentity("dailyBackupTrigger", "monthly")
+                .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(2, 0))
+                .Build();
+            ITrigger monthlyBackupTrigger = TriggerBuilder.Create()
+                .WithIdentity("monthlyBackupTrigger", "monthly")
+                .WithSchedule(CronScheduleBuilder.MonthlyOnDayAndHourAndMinute(1, 3, 0))
                 .Build();
 
             // Tell Quartz to schedule the job using our trigger
-            await scheduler.ScheduleJob(job, trigger);
+            await scheduler.ScheduleJob(dailyBackupJob, dailyBackupTrigger);
+            await scheduler.ScheduleJob(monthlyBackupJob, monthlyBackupTrigger);
 
             // some sleep to show what's happening
             await Task.Delay(TimeSpan.FromSeconds(60));

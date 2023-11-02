@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Configuration;
-using myBackup.Utils;
+using myBackup.Objects;
 
-namespace myBackup.Objects
+namespace myBackup.Utils
 {
     public class FolderAction
     {
@@ -16,9 +16,9 @@ namespace myBackup.Objects
         {
         }
 
-        public static FolderAction Init()
+        public static FolderAction Init(string group)
         {
-            _baseTarget = ConfigUtils.Config.GetSection("target").Value;
+            _baseTarget = ConfigUtils.Config.GetSection(group).GetSection("target").Value;
             _target = Path.Combine(_baseTarget, DateTime.Now.ToString("yyyyMMdd-HHmmss"));
             _backupLocations = ConfigUtils.Config.GetSection("source").Get<List<BackupLocation>>();
 
