@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Configuration;
-using myBackup.utils;
+using myBackup.Utils;
 
-namespace myBackup.model
+namespace myBackup.Objects
 {
     public class FolderAction
     {

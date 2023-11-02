@@ -107,11 +107,13 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="model\BackupLocation.cs" />
-        <Compile Include="model\FolderAction.cs" />
+        <Compile Include="Jobs\HelloJob.cs" />
+        <Compile Include="Jobs\Manager\JobManager.cs" />
+        <Compile Include="Objects\BackupLocation.cs" />
+        <Compile Include="Objects\FolderAction.cs" />
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
-        <Compile Include="utils\ConfigUtils.cs" />
+        <Compile Include="Utils\ConfigUtils.cs" />
     </ItemGroup>
     <ItemGroup>
       <Content Include=".gitignore" />

@@ -1,4 +1,4 @@
-﻿namespace myBackup.model
+﻿namespace myBackup.Objects
 {
     public struct BackupLocation
     {
