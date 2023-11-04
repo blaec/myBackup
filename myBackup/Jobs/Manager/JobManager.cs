@@ -1,9 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Quartz;
-using Quartz.Impl;
 
 namespace myBackup.Jobs.Manager
 {
@@ -28,21 +26,21 @@ namespace myBackup.Jobs.Manager
             var scheduler = await schedulerFactory.GetScheduler();
 
             var dailyBackupJob = JobBuilder.Create<BackupJob>()
-                .WithIdentity("dailyBackupJob", "daily")
+                .WithIdentity("dailyBackupJob", "backup")
                 .UsingJobData("root", "daily")
                 .Build();
             IJobDetail monthlyBackupJob = JobBuilder.Create<BackupJob>()
-                .WithIdentity("monthlyBackupJob", "monthly")
+                .WithIdentity("monthlyBackupJob", "backup")
                 .UsingJobData("root", "monthly")
                 .Build();
 
             ITrigger dailyBackupTrigger = TriggerBuilder.Create()
-                .WithIdentity("dailyBackupTrigger", "daily")
+                .WithIdentity("dailyBackupTrigger", "backup")
                 // .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(2, 0))
                 .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(10,14))
                 .Build();
             ITrigger monthlyBackupTrigger = TriggerBuilder.Create()
-                .WithIdentity("monthlyBackupTrigger", "monthly")
+                .WithIdentity("monthlyBackupTrigger", "backup")
                 .WithSchedule(CronScheduleBuilder.MonthlyOnDayAndHourAndMinute(1, 3, 0))
                 .Build();
 

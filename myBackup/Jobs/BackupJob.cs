@@ -10,12 +10,14 @@ namespace myBackup.Jobs
         public async Task Execute(IJobExecutionContext context)
         {
             JobKey key = context.JobDetail.Key;
-            JobDataMap dataMap = context.JobDetail.JobDataMap;
-            string root = dataMap.GetString("root");
             
-            Console.WriteLine($"{key} | {root} backup job started");
             try
             {
+                JobDataMap dataMap = context.JobDetail.JobDataMap;
+                string root = dataMap.GetString("root");
+            
+                Console.WriteLine($"{key} | {root} backup job started");
+
                 FolderAction folderAction = FolderAction.Init(root);
                 folderAction.CopyFolder();
                 

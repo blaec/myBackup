@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using myBackup.Jobs.Manager;
-using myBackup.Objects;
 using myBackup.Utils;
 
 namespace myBackup
