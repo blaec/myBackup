@@ -14,17 +14,7 @@ namespace myBackup
             
             await JobManager.Init();
 
-            // try
-            // {
-            //     FolderAction folderAction = FolderAction.Init();
-            //     folderAction.CopyFolder();
-            // }
-            // catch (Exception e)
-            // {
-            //     Console.WriteLine("Failed to backup data: " + e.StackTrace);
-            // }
-
-            Console.ReadLine();
+            // Console.ReadLine();
         }
     }
 }

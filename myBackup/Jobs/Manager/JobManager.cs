@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Impl;
 
@@ -9,14 +11,23 @@ namespace myBackup.Jobs.Manager
     {
         public static async Task Init()
         {
-            // Grab the Scheduler instance from the Factory
-            StdSchedulerFactory factory = new StdSchedulerFactory();
-            IScheduler scheduler = await factory.GetScheduler();
+            var builder = Host.CreateDefaultBuilder()
+                .ConfigureServices((cxt, services) =>
+                {
+                    services.AddQuartz(q =>
+                    {
+                        q.UseMicrosoftDependencyInjectionJobFactory();
+                    });
+                    services.AddQuartzHostedService(opt =>
+                    {
+                        opt.WaitForJobsToComplete = true;
+                    });
+                }).Build();
+            
+            var schedulerFactory = builder.Services.GetRequiredService<ISchedulerFactory>();
+            var scheduler = await schedulerFactory.GetScheduler();
 
-            // and start it off
-            await scheduler.Start();
-
-            IJobDetail dailyBackupJob = JobBuilder.Create<DailyBackupJob>()
+            var dailyBackupJob = JobBuilder.Create<DailyBackupJob>()
                 .WithIdentity("dailyBackupJob", "daily")
                 .Build();
             IJobDetail monthlyBackupJob = JobBuilder.Create<MonthlyBackupJob>()
@@ -26,25 +37,18 @@ namespace myBackup.Jobs.Manager
             ITrigger dailyBackupTrigger = TriggerBuilder.Create()
                 .WithIdentity("dailyBackupTrigger", "daily")
                 // .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(2, 0))
-                .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(9,29))
+                .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(9,45))
                 .Build();
             ITrigger monthlyBackupTrigger = TriggerBuilder.Create()
                 .WithIdentity("monthlyBackupTrigger", "monthly")
                 .WithSchedule(CronScheduleBuilder.MonthlyOnDayAndHourAndMinute(1, 3, 0))
                 .Build();
 
-            // Tell Quartz to schedule the job using our trigger
             await scheduler.ScheduleJob(dailyBackupJob, dailyBackupTrigger);
             await scheduler.ScheduleJob(monthlyBackupJob, monthlyBackupTrigger);
 
-            // some sleep to show what's happening
-            // await Task.Delay(TimeSpan.FromSeconds(60));
-            
-            // and last shut down the scheduler when you are ready to close your program
-            // await scheduler.Shutdown();
-            
-            // Console.WriteLine("Press any key to close the application");
-            // Console.ReadKey();
+            // will block until the last running job completes
+            await builder.RunAsync();
         }
     }
 }
