@@ -20,7 +20,7 @@ namespace myBackup.Utils
         {
             IConfigurationSection rootSection = ConfigUtils.Config.GetSection(group);
             _baseTarget = rootSection.GetSection("target").Value;
-            _target = Path.Combine(_baseTarget, DateTime.Now.ToString("yyyyMMdd-HHmmss"));
+            _target = Path.Combine(_baseTarget, DateTime.Now.ToString("yyyyMMdd-HHmm"));
             _backupLocations = rootSection.GetSection("source").Get<List<BackupLocation>>();
 
             if (!Directory.Exists(_baseTarget))
