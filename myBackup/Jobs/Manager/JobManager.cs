@@ -20,12 +20,13 @@ namespace myBackup.Jobs.Manager
                 .WithIdentity("dailyBackupJob", "daily")
                 .Build();
             IJobDetail monthlyBackupJob = JobBuilder.Create<MonthlyBackupJob>()
-                .WithIdentity("monthlyBackupJob", "daily")
+                .WithIdentity("monthlyBackupJob", "monthly")
                 .Build();
 
             ITrigger dailyBackupTrigger = TriggerBuilder.Create()
-                .WithIdentity("dailyBackupTrigger", "monthly")
-                .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(2, 0))
+                .WithIdentity("dailyBackupTrigger", "daily")
+                // .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(2, 0))
+                .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(9,29))
                 .Build();
             ITrigger monthlyBackupTrigger = TriggerBuilder.Create()
                 .WithIdentity("monthlyBackupTrigger", "monthly")
@@ -37,13 +38,13 @@ namespace myBackup.Jobs.Manager
             await scheduler.ScheduleJob(monthlyBackupJob, monthlyBackupTrigger);
 
             // some sleep to show what's happening
-            await Task.Delay(TimeSpan.FromSeconds(60));
+            // await Task.Delay(TimeSpan.FromSeconds(60));
             
             // and last shut down the scheduler when you are ready to close your program
-            await scheduler.Shutdown();
+            // await scheduler.Shutdown();
             
-            Console.WriteLine("Press any key to close the application");
-            Console.ReadKey();
+            // Console.WriteLine("Press any key to close the application");
+            // Console.ReadKey();
         }
     }
 }

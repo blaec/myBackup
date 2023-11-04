@@ -9,6 +9,7 @@ namespace myBackup.Jobs
     {
         public async Task Execute(IJobExecutionContext context)
         {
+            Console.WriteLine("start daily job");
             try
             {
                 FolderAction folderAction = FolderAction.Init("daily");

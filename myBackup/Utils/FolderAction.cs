@@ -18,9 +18,10 @@ namespace myBackup.Utils
 
         public static FolderAction Init(string group)
         {
-            _baseTarget = ConfigUtils.Config.GetSection(group).GetSection("target").Value;
+            IConfigurationSection rootSection = ConfigUtils.Config.GetSection(group);
+            _baseTarget = rootSection.GetSection("target").Value;
             _target = Path.Combine(_baseTarget, DateTime.Now.ToString("yyyyMMdd-HHmmss"));
-            _backupLocations = ConfigUtils.Config.GetSection("source").Get<List<BackupLocation>>();
+            _backupLocations = rootSection.GetSection("source").Get<List<BackupLocation>>();
 
             if (!Directory.Exists(_baseTarget))
             {
