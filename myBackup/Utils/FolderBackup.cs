@@ -2,32 +2,33 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Configuration;
-using myBackup.utils;
+using myBackup.Objects;
 
-namespace myBackup.model
+namespace myBackup.Utils
 {
-    public class FolderAction
+    public class FolderBackup
     {
         private static string _baseTarget;
         private static string _target;
         private static List<BackupLocation> _backupLocations;
 
-        private FolderAction()
+        private FolderBackup()
         {
         }
 
-        public static FolderAction Init()
+        public static FolderBackup Init(string group)
         {
-            _baseTarget = ConfigUtils.Config.GetSection("target").Value;
-            _target = Path.Combine(_baseTarget, DateTime.Now.ToString("yyyyMMdd-HHmmss"));
-            _backupLocations = ConfigUtils.Config.GetSection("source").Get<List<BackupLocation>>();
+            IConfigurationSection rootSection = ConfigUtils.Config.GetSection(group);
+            _baseTarget = rootSection.GetSection("target").Value;
+            _target = Path.Combine(_baseTarget, DateTime.Now.ToString("yyyyMMdd-HHmm"));
+            _backupLocations = rootSection.GetSection("source").Get<List<BackupLocation>>();
 
             if (!Directory.Exists(_baseTarget))
             {
                 Directory.CreateDirectory(_baseTarget);
             }
 
-            return new FolderAction();
+            return new FolderBackup();
         }
 
         public void CopyFolder()
