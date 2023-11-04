@@ -27,17 +27,19 @@ namespace myBackup.Jobs.Manager
             var schedulerFactory = builder.Services.GetRequiredService<ISchedulerFactory>();
             var scheduler = await schedulerFactory.GetScheduler();
 
-            var dailyBackupJob = JobBuilder.Create<DailyBackupJob>()
+            var dailyBackupJob = JobBuilder.Create<BackupJob>()
                 .WithIdentity("dailyBackupJob", "daily")
+                .UsingJobData("root", "daily")
                 .Build();
-            IJobDetail monthlyBackupJob = JobBuilder.Create<MonthlyBackupJob>()
+            IJobDetail monthlyBackupJob = JobBuilder.Create<BackupJob>()
                 .WithIdentity("monthlyBackupJob", "monthly")
+                .UsingJobData("root", "monthly")
                 .Build();
 
             ITrigger dailyBackupTrigger = TriggerBuilder.Create()
                 .WithIdentity("dailyBackupTrigger", "daily")
                 // .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(2, 0))
-                .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(9,45))
+                .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(10,14))
                 .Build();
             ITrigger monthlyBackupTrigger = TriggerBuilder.Create()
                 .WithIdentity("monthlyBackupTrigger", "monthly")
