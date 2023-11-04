@@ -6,17 +6,17 @@ using myBackup.Objects;
 
 namespace myBackup.Utils
 {
-    public class FolderAction
+    public class FolderBackup
     {
         private static string _baseTarget;
         private static string _target;
         private static List<BackupLocation> _backupLocations;
 
-        private FolderAction()
+        private FolderBackup()
         {
         }
 
-        public static FolderAction Init(string group)
+        public static FolderBackup Init(string group)
         {
             IConfigurationSection rootSection = ConfigUtils.Config.GetSection(group);
             _baseTarget = rootSection.GetSection("target").Value;
@@ -28,7 +28,7 @@ namespace myBackup.Utils
                 Directory.CreateDirectory(_baseTarget);
             }
 
-            return new FolderAction();
+            return new FolderBackup();
         }
 
         public void CopyFolder()

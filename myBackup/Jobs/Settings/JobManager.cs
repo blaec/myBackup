@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 
-namespace myBackup.Jobs.Manager
+namespace myBackup.Jobs.Settings
 {
     public class JobManager
     {
@@ -25,23 +25,22 @@ namespace myBackup.Jobs.Manager
             var schedulerFactory = builder.Services.GetRequiredService<ISchedulerFactory>();
             var scheduler = await schedulerFactory.GetScheduler();
 
-            var dailyBackupJob = JobBuilder.Create<BackupJob>()
-                .WithIdentity("dailyBackupJob", "backup")
+            IJobDetail dailyBackupJob = JobBuilder.Create<BackupJob>()
+                .WithIdentity(BackupJob.DailyJobKey)
                 .UsingJobData("root", "daily")
                 .Build();
-            IJobDetail monthlyBackupJob = JobBuilder.Create<BackupJob>()
-                .WithIdentity("monthlyBackupJob", "backup")
-                .UsingJobData("root", "monthly")
+            ITrigger dailyBackupTrigger = TriggerBuilder.Create()
+                .WithIdentity("dailyBackupTrigger", JobGroup.Backup.ToString())
+                .WithSchedule(TriggerUtils.DailySchedule)
                 .Build();
 
-            ITrigger dailyBackupTrigger = TriggerBuilder.Create()
-                .WithIdentity("dailyBackupTrigger", "backup")
-                // .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(2, 0))
-                .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(10,14))
+            IJobDetail monthlyBackupJob = JobBuilder.Create<BackupJob>()
+                .WithIdentity(BackupJob.MonthlyJobKey)
+                .UsingJobData("root", "monthly")
                 .Build();
             ITrigger monthlyBackupTrigger = TriggerBuilder.Create()
-                .WithIdentity("monthlyBackupTrigger", "backup")
-                .WithSchedule(CronScheduleBuilder.MonthlyOnDayAndHourAndMinute(1, 3, 0))
+                .WithIdentity("monthlyBackupTrigger", JobGroup.Backup.ToString())
+                .WithSchedule(TriggerUtils.MonthlySchedule)
                 .Build();
 
             await scheduler.ScheduleJob(dailyBackupJob, dailyBackupTrigger);

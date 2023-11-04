@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using myBackup.Jobs.Manager;
+using myBackup.Jobs.Settings;
 using myBackup.Utils;
 
 namespace myBackup
