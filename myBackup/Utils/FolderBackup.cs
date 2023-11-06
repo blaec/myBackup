@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using log4net;
 using Microsoft.Extensions.Configuration;
 using myBackup.Objects;
 
@@ -8,6 +9,8 @@ namespace myBackup.Utils
 {
     public class FolderBackup
     {
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private static string _baseTarget;
         private static string _target;
         private static List<BackupLocation> _backupLocations;
@@ -46,7 +49,7 @@ namespace myBackup.Utils
 
         private void CopyFolder(DirectoryInfo di, string path, BackupLocation location)
         {
-            Console.WriteLine($"[{di.GetDirectories().Length} - {di.GetFiles().Length}] {di.FullName}");
+            Log.Info($"[{di.GetDirectories().Length} - {di.GetFiles().Length}] {di.FullName}");
             string destinationFolderName = Path.Combine(_target, location.name + "\\" + path);
             if (!Directory.Exists(destinationFolderName))
             {

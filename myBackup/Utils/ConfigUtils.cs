@@ -16,7 +16,7 @@ namespace myBackup.Utils
             var builder = new ConfigurationBuilder();
             builder.SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("AppSettings.json", optional: false, reloadOnChange: true);
- 
+
             Config = builder.Build();
         }
     }

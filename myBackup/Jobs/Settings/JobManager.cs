@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Quartz;
 
 namespace myBackup.Jobs.Settings
@@ -19,6 +20,10 @@ namespace myBackup.Jobs.Settings
                     services.AddQuartzHostedService(opt =>
                     {
                         opt.WaitForJobsToComplete = true;
+                    });
+                    services.Configure<LoggerFilterOptions>(options =>
+                    {
+                        options.AddFilter("Quartz", LogLevel.Error); // Adjust to your desired log level
                     });
                 }).Build();
             
