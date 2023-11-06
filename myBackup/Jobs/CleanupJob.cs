@@ -13,6 +13,8 @@ namespace myBackup.Jobs
         
         public static readonly JobKey DailyJobKey = new JobKey("dailyCleanupJob", JobGroup.Cleanup.ToString());
         public static readonly JobKey MonthlyJobKey = new JobKey("monthlyCleanupJob", JobGroup.Cleanup.ToString());
+        public static readonly TriggerKey DailyTriggerKey = new TriggerKey("dailyCleanupTrigger", JobGroup.Cleanup.ToString());
+        public static readonly TriggerKey MonthlyTriggerKey = new TriggerKey("monthlyCleanupTrigger", JobGroup.Cleanup.ToString());
 
         public async Task Execute(IJobExecutionContext context)
         {
