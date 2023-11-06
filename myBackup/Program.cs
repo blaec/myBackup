@@ -15,9 +15,7 @@ namespace myBackup
             Log.Info("Starting...");
             
             ConfigUtils.Init();
-            FolderCleanup.Init(ConfigUtils.Config.GetSection("daily")).CleanupBackup();
-            FolderCleanup.Init(ConfigUtils.Config.GetSection("monthly")).CleanupBackup();
-            // await JobManager.Init();
+            await JobManager.Init();
 
             // Console.ReadLine();
         }
