@@ -7,15 +7,15 @@ using Quartz;
 
 namespace myBackup.Jobs
 {
-    public class BackupJob : IJob
+    public class CleanupJob : IJob
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        public static readonly JobKey DailyJobKey = new JobKey("dailyBackupJob", JobGroup.Backup.ToString());
-        public static readonly JobKey MonthlyJobKey = new JobKey("monthlyBackupJob", JobGroup.Backup.ToString());
-        public static readonly TriggerKey DailyTriggerKey = new TriggerKey("dailyBackupTrigger", JobGroup.Backup.ToString());
-        public static readonly TriggerKey MonthlyTriggerKey = new TriggerKey("monthlyBackupTrigger", JobGroup.Backup.ToString());
         
+        public static readonly JobKey DailyJobKey = new JobKey("dailyCleanupJob", JobGroup.Cleanup.ToString());
+        public static readonly JobKey MonthlyJobKey = new JobKey("monthlyCleanupJob", JobGroup.Cleanup.ToString());
+        public static readonly TriggerKey DailyTriggerKey = new TriggerKey("dailyCleanupTrigger", JobGroup.Cleanup.ToString());
+        public static readonly TriggerKey MonthlyTriggerKey = new TriggerKey("monthlyCleanupTrigger", JobGroup.Cleanup.ToString());
+
         public async Task Execute(IJobExecutionContext context)
         {
             JobKey key = context.JobDetail.Key;
@@ -24,17 +24,17 @@ namespace myBackup.Jobs
             {
                 string root = context.MergedJobDataMap.GetString("root");
             
-                Log.Info($"{key} | {root} backup job started");
+                Log.Info($"{key} | {root} cleanup job started");
 
-                FolderBackup
+                FolderCleanup
                     .Init(ConfigUtils.Config.GetSection(root))
-                    .CopyFolder();
+                    .CleanupBackup();
                 
-                await LogInfoAsync($"{key} | {root} backup job finished");
+                await LogInfoAsync($"{key} | {root} cleanup job finished");
             }
             catch (Exception e)
             {
-                await LogInfoAsync($"{key} | Failed to backup data: " + e.StackTrace);
+                await LogInfoAsync($"{key} | Failed to cleanup data: " + e.StackTrace);
             }
         }
         

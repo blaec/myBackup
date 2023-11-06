@@ -171,6 +171,8 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Jobs\BackupJob.cs" />
+        <Compile Include="Jobs\CleanupJob.cs" />
+        <Compile Include="Jobs\Settings\JobConstructorUtils.cs" />
         <Compile Include="Jobs\Settings\JobGroup.cs" />
         <Compile Include="Jobs\Settings\JobManager.cs" />
         <Compile Include="Jobs\Settings\TriggerUtils.cs" />
@@ -179,6 +181,7 @@
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="Utils\ConfigUtils.cs" />
         <Compile Include="Utils\FolderBackup.cs" />
+        <Compile Include="Utils\FolderCleanup.cs" />
     </ItemGroup>
     <ItemGroup>
       <Content Include=".gitignore" />

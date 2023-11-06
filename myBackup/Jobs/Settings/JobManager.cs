@@ -30,25 +30,21 @@ namespace myBackup.Jobs.Settings
             var schedulerFactory = builder.Services.GetRequiredService<ISchedulerFactory>();
             var scheduler = await schedulerFactory.GetScheduler();
 
-            IJobDetail dailyBackupJob = JobBuilder.Create<BackupJob>()
-                .WithIdentity(BackupJob.DailyJobKey)
-                .UsingJobData("root", "daily")
-                .Build();
-            ITrigger dailyBackupTrigger = TriggerBuilder.Create()
-                .WithIdentity("dailyBackupTrigger", JobGroup.Backup.ToString())
-                .WithSchedule(TriggerUtils.DailySchedule)
-                .Build();
+            IJobDetail dailyCleanupJob = JobConstructorUtils.CreateJob<CleanupJob>("daily", CleanupJob.DailyJobKey);
+            ITrigger dailyCleanupTrigger = JobConstructorUtils.CreateTrigger(CleanupJob.DailyTriggerKey, TriggerUtils.DailyCleanupSchedule);
+            
+            IJobDetail dailyBackupJob = JobConstructorUtils.CreateJob<BackupJob>("daily", BackupJob.DailyJobKey);
+            ITrigger dailyBackupTrigger = JobConstructorUtils.CreateTrigger(BackupJob.DailyTriggerKey, TriggerUtils.DailyBackupSchedule);
+            
+            IJobDetail monthlyCleanupJob = JobConstructorUtils.CreateJob<CleanupJob>("monthly", CleanupJob.MonthlyJobKey);
+            ITrigger monthlyCleanupTrigger = JobConstructorUtils.CreateTrigger(CleanupJob.MonthlyTriggerKey, TriggerUtils.MonthlyCleanupSchedule);
 
-            IJobDetail monthlyBackupJob = JobBuilder.Create<BackupJob>()
-                .WithIdentity(BackupJob.MonthlyJobKey)
-                .UsingJobData("root", "monthly")
-                .Build();
-            ITrigger monthlyBackupTrigger = TriggerBuilder.Create()
-                .WithIdentity("monthlyBackupTrigger", JobGroup.Backup.ToString())
-                .WithSchedule(TriggerUtils.MonthlySchedule)
-                .Build();
+            IJobDetail monthlyBackupJob = JobConstructorUtils.CreateJob<BackupJob>("monthly", BackupJob.MonthlyJobKey);
+            ITrigger monthlyBackupTrigger = JobConstructorUtils.CreateTrigger(BackupJob.MonthlyTriggerKey, TriggerUtils.MonthlyBackupSchedule);
 
+            await scheduler.ScheduleJob(dailyCleanupJob, dailyCleanupTrigger);
             await scheduler.ScheduleJob(dailyBackupJob, dailyBackupTrigger);
+            await scheduler.ScheduleJob(monthlyCleanupJob, monthlyCleanupTrigger);
             await scheduler.ScheduleJob(monthlyBackupJob, monthlyBackupTrigger);
 
             // will block until the last running job completes
