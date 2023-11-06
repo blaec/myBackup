@@ -13,18 +13,16 @@ namespace myBackup.Utils
         private static string _baseTarget;
         private static int _historySize;
 
-        private FolderCleanup(string baseTarget, int historySize)
+        private FolderCleanup()
         {
-            _baseTarget = baseTarget;
-            _historySize = historySize;
         }
         
         public static FolderCleanup Init(IConfigurationSection configSection)
         {
-            string baseTarget = configSection["target"];
-            int historySize = Convert.ToInt32(configSection["history"]);
+            _baseTarget = configSection["target"];
+            _historySize = Convert.ToInt32(configSection["history"]);
 
-            return new FolderCleanup(baseTarget, historySize);
+            return new FolderCleanup();
         }
 
         public void CleanupBackup()
